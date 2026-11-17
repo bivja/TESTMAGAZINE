@@ -10,56 +10,55 @@
     a { text-decoration: none; color: inherit; }
     ul { list-style: none; }
     
-    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 24px; }
     .flex { display: flex; }
     .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
 
+    /* Шапка */
     header { border-bottom: 1px solid #eee; padding: 16px 0; position: sticky; top: 0; background: #fff; z-index: 100; }
     .logo { font-size: 28px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
     .logo span { color: #e60000; }
     .nav-links { display: none; gap: 24px; font-size: 14px; font-weight: 500; }
+    .nav-links a { cursor: pointer; transition: color 0.2s; }
+    .nav-links a:hover { color: #e60000; }
     .cart-btn { border: 1px solid #000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; }
 
-    .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 32px 0; }
+    /* Баннеры разделов (как у Lamoda) */
+    .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 32px 0; }
+    .category-card { position: relative; height: 200px; border-radius: 8px; overflow: hidden; cursor: pointer; }
+    .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .category-card:hover img { transform: scale(1.05); }
+    .category-title { position: absolute; bottom: 16px; left: 16px; color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     
-    .sidebar h3 { font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
-    .sidebar ul li { margin-bottom: 12px; cursor: pointer; color: #555; transition: color 0.2s; font-size: 14px; }
-    .sidebar ul li:hover { color: #e60000; }
-
-    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    /* Сетка товаров */
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 40px; }
     .product-card { background: #f9f9f9; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
     .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
     
-    /* Картинка-заглушка (SVG) */
-    .product-img { 
-        width: 100%; height: 250px; 
-        display: flex; align-items: center; justify-content: center;
-        background: #eee; 
-    }
-    .product-img svg { width: 100px; height: 100px; opacity: 0.3; }
+    .product-img { width: 100%; height: 250px; object-fit: cover; background: #eee; display: block; }
     
     .product-info { padding: 12px; }
     .product-brand { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
     .product-name { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
     .product-price { font-size: 16px; font-weight: 700; }
 
+    /* Корзина */
     .cart-panel { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 200; transition: right 0.3s; padding: 24px; display: flex; flex-direction: column; }
     .cart-panel.open { right: 0; }
     .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
     .cart-items { flex-grow: 1; overflow-y: auto; }
     .cart-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
-    .cart-item .product-img { width: 60px; height: 60px; border-radius: 4px; }
-    .cart-item .product-img svg { width: 30px; height: 30px; }
+    .cart-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 4px; }
     .cart-item-info { flex-grow: 1; font-size: 14px; }
     .cart-total { border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px; font-size: 20px; font-weight: 700; text-align: right; }
     .checkout-btn { background: #e60000; color: #fff; border: none; padding: 16px; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; width: 100%; }
     .close-cart { cursor: pointer; font-size: 24px; }
 
     @media (min-width: 768px) {
-        .main-grid { grid-template-columns: 200px 1fr; }
-        .products-grid { grid-template-columns: repeat(3, 1fr); }
         .nav-links { display: flex; }
+        .categories-grid { grid-template-columns: repeat(4, 1fr); }
+        .products-grid { grid-template-columns: repeat(3, 1fr); }
         .product-img { height: 300px; }
     }
     @media (min-width: 1024px) {
@@ -73,33 +72,41 @@
     <div class="container flex justify-between items-center">
         <div class="logo">TESTMAGAZIN<span>.</span></div>
         <div class="nav-links">
-            <a href="#">Женщинам</a>
-            <a href="#">Мужчинам</a>
-            <a href="#">Детям</a>
-            <a href="#">Бренды</a>
+            <a onclick="filterAudience('women')">Женщинам</a>
+            <a onclick="filterAudience('men')">Мужчинам</a>
+            <a onclick="filterAudience('kids')">Детям</a>
+            <a onclick="filterAudience('all')">Все товары</a>
         </div>
         <div class="cart-btn" onclick="toggleCart()">Корзина <span id="cartCount">0</span></div>
     </div>
 </header>
 
 <main class="container">
-    <div class="main-grid">
-        <aside class="sidebar">
-            <h3>Категории</h3>
-            <ul>
-                <li onclick="filterProducts('all')">Все товары</li>
-                <li onclick="filterProducts('Платья')">Платья</li>
-                <li onclick="filterProducts('Джинсы')">Джинсы</li>
-                <li onclick="filterProducts('Обувь')">Обувь</li>
-                <li onclick="filterProducts('Аксессуары')">Аксессуары</li>
-                <li onclick="filterProducts('Верхняя одежда')">Верхняя одежда</li>
-            </ul>
-        </aside>
-
-        <div class="products-grid" id="productsGrid"></div>
+    <!-- Разделы как у Lamoda -->
+    <div class="categories-grid">
+        <div class="category-card" onclick="filterAudience('women')">
+            <img src="https://images.pexels.com/photos/934063/pexels-photo-934063.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Женщинам">
+            <div class="category-title">Женщинам</div>
+        </div>
+        <div class="category-card" onclick="filterAudience('men')">
+            <img src="https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Мужчинам">
+            <div class="category-title">Мужчинам</div>
+        </div>
+        <div class="category-card" onclick="filterAudience('kids')">
+            <img src="https://images.pexels.com/photos/35188/child-childrens-baby-children-s.jpg?auto=compress&cs=tinysrgb&w=600" alt="Детям">
+            <div class="category-title">Детям</div>
+        </div>
+        <div class="category-card" onclick="filterAudience('all')">
+            <img src="https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Все товары">
+            <div class="category-title">Все товары</div>
+        </div>
     </div>
+
+    <!-- Сетка товаров -->
+    <div class="products-grid" id="productsGrid"></div>
 </main>
 
+<!-- Корзина -->
 <div class="cart-panel" id="cartPanel">
     <div class="cart-header">
         <h2>Корзина</h2>
@@ -111,42 +118,36 @@
 </div>
 
 <script>
-    // SVG-иконки для товаров (вшиты в код)
-    const icons = {
-        dress: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M12 2L8 6l-4 16h16L16 6l-4-4z"/></svg>`,
-        jeans: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M8 2h8v20H8V2z"/><path d="M12 2v20"/></svg>`,
-        shoes: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M2 18h20v2H2z"/><path d="M4 18V8c0-2 2-4 4-4h4v6h4v8"/></svg>`,
-        bag: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>`,
-        hoodie: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M4 8l4-4h8l4 4v12H4V8z"/><path d="M8 4c0 2 4 2 4 2s4 0 4-2"/></svg>`,
-        coat: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M6 4h12v18H6V4z"/><path d="M12 4v18"/><path d="M9 8h6"/></svg>`
-    };
-
+    // Товары с реальными фото
     const allProducts = [
-        {id: 1, name: 'Платье миди', category: 'Платья', price: 4500, brand: 'ZARA', icon: icons.dress},
-        {id: 2, name: 'Джинсы широкие', category: 'Джинсы', price: 3800, brand: 'Levis', icon: icons.jeans},
-        {id: 3, name: 'Кроссовки белые', category: 'Обувь', price: 7990, brand: 'Nike', icon: icons.shoes},
-        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', price: 6200, brand: 'Mango', icon: icons.bag},
-        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', price: 3500, brand: 'H&M', icon: icons.hoodie},
-        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', price: 12500, brand: 'COS', icon: icons.coat}
+        {id: 1, name: 'Платье миди', category: 'Платья', audience: 'women', price: 4500, brand: 'ZARA', image: 'https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 2, name: 'Джинсы широкие', category: 'Джинсы', audience: 'women', price: 3800, brand: 'Levis', image: 'https://images.pexels.com/photos/1082529/pexels-photo-1082529.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 3, name: 'Кроссовки белые', category: 'Обувь', audience: 'men', price: 7990, brand: 'Nike', image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', audience: 'women', price: 6200, brand: 'Mango', image: 'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', audience: 'kids', price: 3500, brand: 'H&M', image: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', audience: 'women', price: 12500, brand: 'COS', image: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600'}
     ];
 
     let currentCategory = 'all';
+    let currentAudience = 'all';
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
 
     function renderProducts() {
         const grid = document.getElementById('productsGrid');
         grid.innerHTML = '';
         
-        const filtered = currentCategory === 'all' 
-            ? allProducts 
-            : allProducts.filter(p => p.category === currentCategory);
+        const filtered = allProducts.filter(p => {
+            const matchCategory = currentCategory === 'all' || p.category === currentCategory;
+            const matchAudience = currentAudience === 'all' || p.audience === currentAudience;
+            return matchCategory && matchAudience;
+        });
 
         filtered.forEach(product => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.onclick = () => addToCart(product.id);
             card.innerHTML = `
-                <div class="product-img">${product.icon}</div>
+                <img src="${product.image}" alt="${product.name}" class="product-img">
                 <div class="product-info">
                     <div class="product-brand">${product.brand}</div>
                     <div class="product-name">${product.name}</div>
@@ -157,8 +158,14 @@
         });
     }
 
-    function filterProducts(category) {
+    function filterCategory(category) {
         currentCategory = category;
+        renderProducts();
+    }
+
+    function filterAudience(audience) {
+        currentAudience = audience;
+        currentCategory = 'all'; 
         renderProducts();
     }
 
@@ -187,7 +194,7 @@
             totalPrice += item.price * item.qty;
             cartItems.innerHTML += `
                 <div class="cart-item">
-                    <div class="product-img">${item.icon}</div>
+                    <img src="${item.image}" alt="${item.name}">
                     <div class="cart-item-info">
                         <div>${item.name}</div>
                         <div style="color: #888; font-size: 12px;">${item.qty} шт.</div>
