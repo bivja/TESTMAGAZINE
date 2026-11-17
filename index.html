@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TESTMAGAZIN — Интернет-магазин</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background-color: #fff; color: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; line-height: 1.5; }
+    a { text-decoration: none; color: inherit; }
+    ul { list-style: none; }
+    
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+    .flex { display: flex; }
+    .items-center { align-items: center; }
+    .justify-between { justify-content: space-between; }
+
+    header { border-bottom: 1px solid #eee; padding: 16px 0; position: sticky; top: 0; background: #fff; z-index: 100; }
+    .logo { font-size: 28px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
+    .logo span { color: #e60000; }
+    .nav-links { display: none; gap: 24px; font-size: 14px; font-weight: 500; }
+    .cart-btn { border: 1px solid #000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; }
+
+    .main-grid { display: grid; grid-template-columns: 1fr; gap: 24px; padding: 32px 0; }
+    
+    .sidebar h3 { font-size: 16px; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 1px; }
+    .sidebar ul li { margin-bottom: 12px; cursor: pointer; color: #555; transition: color 0.2s; font-size: 14px; }
+    .sidebar ul li:hover { color: #e60000; }
+
+    .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+    .product-card { background: #f9f9f9; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
+    .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
+    
+    /* Картинка-заглушка (SVG) */
+    .product-img { 
+        width: 100%; height: 250px; 
+        display: flex; align-items: center; justify-content: center;
+        background: #eee; 
+    }
+    .product-img svg { width: 100px; height: 100px; opacity: 0.3; }
+    
+    .product-info { padding: 12px; }
+    .product-brand { font-size: 12px; color: #888; text-transform: uppercase; margin-bottom: 4px; }
+    .product-name { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
+    .product-price { font-size: 16px; font-weight: 700; }
+
+    .cart-panel { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 200; transition: right 0.3s; padding: 24px; display: flex; flex-direction: column; }
+    .cart-panel.open { right: 0; }
+    .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
+    .cart-items { flex-grow: 1; overflow-y: auto; }
+    .cart-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
+    .cart-item .product-img { width: 60px; height: 60px; border-radius: 4px; }
+    .cart-item .product-img svg { width: 30px; height: 30px; }
+    .cart-item-info { flex-grow: 1; font-size: 14px; }
+    .cart-total { border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px; font-size: 20px; font-weight: 700; text-align: right; }
+    .checkout-btn { background: #e60000; color: #fff; border: none; padding: 16px; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; width: 100%; }
+    .close-cart { cursor: pointer; font-size: 24px; }
+
+    @media (min-width: 768px) {
+        .main-grid { grid-template-columns: 200px 1fr; }
+        .products-grid { grid-template-columns: repeat(3, 1fr); }
+        .nav-links { display: flex; }
+        .product-img { height: 300px; }
+    }
+    @media (min-width: 1024px) {
+        .products-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <div class="container flex justify-between items-center">
+        <div class="logo">TESTMAGAZIN<span>.</span></div>
+        <div class="nav-links">
+            <a href="#">Женщинам</a>
+            <a href="#">Мужчинам</a>
+            <a href="#">Детям</a>
+            <a href="#">Бренды</a>
+        </div>
+        <div class="cart-btn" onclick="toggleCart()">Корзина <span id="cartCount">0</span></div>
+    </div>
+</header>
+
+<main class="container">
+    <div class="main-grid">
+        <aside class="sidebar">
+            <h3>Категории</h3>
+            <ul>
+                <li onclick="filterProducts('all')">Все товары</li>
+                <li onclick="filterProducts('Платья')">Платья</li>
+                <li onclick="filterProducts('Джинсы')">Джинсы</li>
+                <li onclick="filterProducts('Обувь')">Обувь</li>
+                <li onclick="filterProducts('Аксессуары')">Аксессуары</li>
+                <li onclick="filterProducts('Верхняя одежда')">Верхняя одежда</li>
+            </ul>
+        </aside>
+
+        <div class="products-grid" id="productsGrid"></div>
+    </div>
+</main>
+
+<div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+        <h2>Корзина</h2>
+        <span class="close-cart" onclick="toggleCart()">&times;</span>
+    </div>
+    <div class="cart-items" id="cartItems"></div>
+    <div class="cart-total">Итого: <span id="cartTotal">0</span> ₽</div>
+    <button class="checkout-btn" onclick="alert('Заказ оформлен! (Демо)')">Оформить заказ</button>
+</div>
+
+<script>
+    // SVG-иконки для товаров (вшиты в код)
+    const icons = {
+        dress: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M12 2L8 6l-4 16h16L16 6l-4-4z"/></svg>`,
+        jeans: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M8 2h8v20H8V2z"/><path d="M12 2v20"/></svg>`,
+        shoes: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M2 18h20v2H2z"/><path d="M4 18V8c0-2 2-4 4-4h4v6h4v8"/></svg>`,
+        bag: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><rect x="4" y="8" width="16" height="12" rx="2"/><path d="M8 8V6a4 4 0 018 0v2"/></svg>`,
+        hoodie: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M4 8l4-4h8l4 4v12H4V8z"/><path d="M8 4c0 2 4 2 4 2s4 0 4-2"/></svg>`,
+        coat: `<svg viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5"><path d="M6 4h12v18H6V4z"/><path d="M12 4v18"/><path d="M9 8h6"/></svg>`
+    };
+
+    const allProducts = [
+        {id: 1, name: 'Платье миди', category: 'Платья', price: 4500, brand: 'ZARA', icon: icons.dress},
+        {id: 2, name: 'Джинсы широкие', category: 'Джинсы', price: 3800, brand: 'Levis', icon: icons.jeans},
+        {id: 3, name: 'Кроссовки белые', category: 'Обувь', price: 7990, brand: 'Nike', icon: icons.shoes},
+        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', price: 6200, brand: 'Mango', icon: icons.bag},
+        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', price: 3500, brand: 'H&M', icon: icons.hoodie},
+        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', price: 12500, brand: 'COS', icon: icons.coat}
+    ];
+
+    let currentCategory = 'all';
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    function renderProducts() {
+        const grid = document.getElementById('productsGrid');
+        grid.innerHTML = '';
+        
+        const filtered = currentCategory === 'all' 
+            ? allProducts 
+            : allProducts.filter(p => p.category === currentCategory);
+
+        filtered.forEach(product => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.onclick = () => addToCart(product.id);
+            card.innerHTML = `
+                <div class="product-img">${product.icon}</div>
+                <div class="product-info">
+                    <div class="product-brand">${product.brand}</div>
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price.toLocaleString()} ₽</div>
+                </div>
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function filterProducts(category) {
+        currentCategory = category;
+        renderProducts();
+    }
+
+    function addToCart(productId) {
+        const existing = cart.find(item => item.id === productId);
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            const product = allProducts.find(p => p.id === productId);
+            cart.push({ ...product, qty: 1 });
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCart();
+        toggleCart();
+    }
+
+    function updateCart() {
+        const cartItems = document.getElementById('cartItems');
+        cartItems.innerHTML = '';
+        
+        let totalQty = 0;
+        let totalPrice = 0;
+
+        cart.forEach(item => {
+            totalQty += item.qty;
+            totalPrice += item.price * item.qty;
+            cartItems.innerHTML += `
+                <div class="cart-item">
+                    <div class="product-img">${item.icon}</div>
+                    <div class="cart-item-info">
+                        <div>${item.name}</div>
+                        <div style="color: #888; font-size: 12px;">${item.qty} шт.</div>
+                    </div>
+                    <div>${(item.price * item.qty).toLocaleString()} ₽</div>
+                </div>
+            `;
+        });
+
+        document.getElementById('cartCount').innerText = totalQty;
+        document.getElementById('cartTotal').innerText = totalPrice.toLocaleString();
+    }
+
+    function toggleCart() {
+        document.getElementById('cartPanel').classList.toggle('open');
+    }
+
+    renderProducts();
+    updateCart();
+</script>
+
+</body>
+</html>
