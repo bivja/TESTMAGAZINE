@@ -15,7 +15,6 @@
     .items-center { align-items: center; }
     .justify-between { justify-content: space-between; }
 
-    /* Шапка */
     header { border-bottom: 1px solid #eee; padding: 16px 0; position: sticky; top: 0; background: #fff; z-index: 100; }
     .logo { font-size: 28px; font-weight: 800; letter-spacing: -1px; text-transform: uppercase; }
     .logo span { color: #e60000; }
@@ -24,14 +23,12 @@
     .nav-links a:hover { color: #e60000; }
     .cart-btn { border: 1px solid #000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; }
 
-    /* Баннеры разделов (как у Lamoda) */
     .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 32px 0; }
-    .category-card { position: relative; height: 200px; border-radius: 8px; overflow: hidden; cursor: pointer; }
+    .category-card { position: relative; height: 200px; border-radius: 8px; overflow: hidden; cursor: pointer; background: #f0f0f0; }
     .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
     .category-card:hover img { transform: scale(1.05); }
     .category-title { position: absolute; bottom: 16px; left: 16px; color: #fff; font-size: 20px; font-weight: 700; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
     
-    /* Сетка товаров */
     .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 40px; }
     .product-card { background: #f9f9f9; border-radius: 8px; overflow: hidden; cursor: pointer; transition: transform 0.2s; }
     .product-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.05); }
@@ -43,7 +40,6 @@
     .product-name { font-size: 14px; font-weight: 500; margin-bottom: 8px; }
     .product-price { font-size: 16px; font-weight: 700; }
 
-    /* Корзина */
     .cart-panel { position: fixed; top: 0; right: -400px; width: 400px; height: 100%; background: #fff; box-shadow: -5px 0 20px rgba(0,0,0,0.1); z-index: 200; transition: right 0.3s; padding: 24px; display: flex; flex-direction: column; }
     .cart-panel.open { right: 0; }
     .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
@@ -82,31 +78,28 @@
 </header>
 
 <main class="container">
-    <!-- Разделы как у Lamoda -->
     <div class="categories-grid">
         <div class="category-card" onclick="filterAudience('women')">
-            <img src="https://images.pexels.com/photos/934063/pexels-photo-934063.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Женщинам">
+            <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=600&q=80" alt="Женщинам">
             <div class="category-title">Женщинам</div>
         </div>
         <div class="category-card" onclick="filterAudience('men')">
-            <img src="https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Мужчинам">
+            <img src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?w=600&q=80" alt="Мужчинам">
             <div class="category-title">Мужчинам</div>
         </div>
         <div class="category-card" onclick="filterAudience('kids')">
-            <img src="https://images.pexels.com/photos/35188/child-childrens-baby-children-s.jpg?auto=compress&cs=tinysrgb&w=600" alt="Детям">
+            <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&q=80" alt="Детям">
             <div class="category-title">Детям</div>
         </div>
         <div class="category-card" onclick="filterAudience('all')">
-            <img src="https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Все товары">
+            <img src="https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=600&q=80" alt="Все товары">
             <div class="category-title">Все товары</div>
         </div>
     </div>
 
-    <!-- Сетка товаров -->
     <div class="products-grid" id="productsGrid"></div>
 </main>
 
-<!-- Корзина -->
 <div class="cart-panel" id="cartPanel">
     <div class="cart-header">
         <h2>Корзина</h2>
@@ -118,14 +111,13 @@
 </div>
 
 <script>
-    // Товары с реальными фото
     const allProducts = [
-        {id: 1, name: 'Платье миди', category: 'Платья', audience: 'women', price: 4500, brand: 'ZARA', image: 'https://images.pexels.com/photos/1755428/pexels-photo-1755428.jpeg?auto=compress&cs=tinysrgb&w=600'},
-        {id: 2, name: 'Джинсы широкие', category: 'Джинсы', audience: 'women', price: 3800, brand: 'Levis', image: 'https://images.pexels.com/photos/1082529/pexels-photo-1082529.jpeg?auto=compress&cs=tinysrgb&w=600'},
-        {id: 3, name: 'Кроссовки белые', category: 'Обувь', audience: 'men', price: 7990, brand: 'Nike', image: 'https://images.pexels.com/photos/2529148/pexels-photo-2529148.jpeg?auto=compress&cs=tinysrgb&w=600'},
-        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', audience: 'women', price: 6200, brand: 'Mango', image: 'https://images.pexels.com/photos/1152077/pexels-photo-1152077.jpeg?auto=compress&cs=tinysrgb&w=600'},
-        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', audience: 'kids', price: 3500, brand: 'H&M', image: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600'},
-        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', audience: 'women', price: 12500, brand: 'COS', image: 'https://images.pexels.com/photos/1183266/pexels-photo-1183266.jpeg?auto=compress&cs=tinysrgb&w=600'}
+        {id: 1, name: 'Платье миди', category: 'Платья', audience: 'women', price: 4500, brand: 'ZARA', image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80'},
+        {id: 2, name: 'Джинсы широкие', category: 'Джинсы', audience: 'women', price: 3800, brand: 'Levis', image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=600&q=80'},
+        {id: 3, name: 'Кроссовки белые', category: 'Обувь', audience: 'men', price: 7990, brand: 'Nike', image: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&q=80'},
+        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', audience: 'women', price: 6200, brand: 'Mango', image: 'https://images.unsplash.com/photo-1584916201218-f4242ceb4809?w=600&q=80'},
+        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', audience: 'kids', price: 3500, brand: 'H&M', image: 'https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&q=80'},
+        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', audience: 'women', price: 12500, brand: 'COS', image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80'}
     ];
 
     let currentCategory = 'all';
