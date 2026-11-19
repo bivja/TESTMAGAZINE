@@ -42,7 +42,6 @@
     .product-img img {
         width: 100%; height: 100%; object-fit: cover; display: block;
         filter: saturate(0.95) contrast(1.02);
-        loading: lazy;
     }
     
     .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -63,9 +62,21 @@
     .cart-panel.open { right: 0; }
     .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 1px solid #eee; padding-bottom: 16px; }
     .cart-items { flex-grow: 1; overflow-y: auto; }
-    .cart-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; }
-    .cart-item .product-img { width: 60px; height: 80px; border-radius: 4px; border: none; }
-    .cart-item-info { flex-grow: 1; font-size: 14px; }
+    
+    /* Стили для элементов корзины */
+    .cart-item { display: flex; gap: 12px; margin-bottom: 16px; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 16px; }
+    .cart-item .product-img { width: 60px; height: 80px; border-radius: 4px; border: none; flex-shrink: 0; }
+    .cart-item-info { flex-grow: 1; font-size: 14px; display: flex; flex-direction: column; gap: 4px; }
+    .cart-item-controls { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    
+    .qty-btn { background: #eee; border: none; width: 24px; height: 24px; border-radius: 4px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+    .qty-btn:hover { background: #ddd; }
+    .qty-value { font-size: 14px; font-weight: 500; min-width: 20px; text-align: center; }
+    
+    .remove-btn { background: none; border: none; cursor: pointer; color: #e60000; font-size: 18px; margin-left: auto; padding: 4px; }
+    
+    .cart-item-price { font-weight: 700; font-size: 14px; white-space: nowrap; }
+    
     .cart-total { border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px; font-size: 20px; font-weight: 700; text-align: right; }
     .checkout-btn { background: #e60000; color: #fff; border: none; padding: 16px; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; width: 100%; }
     .close-cart { cursor: pointer; font-size: 24px; user-select: none; }
@@ -221,9 +232,30 @@
             const product = allProducts.find(p => p.id === productId);
             cart.push({ ...product, qty: 1 });
         }
-        localStorage.setItem('cart', JSON.stringify(cart));
+        saveCart();
         updateCart();
-        // Не открываем корзину автоматически, чтобы не мешать, но обновляем счетчик
+    }
+
+    function changeQty(productId, delta) {
+        const item = cart.find(i => i.id === productId);
+        if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== productId);
+            }
+            saveCart();
+            updateCart();
+        }
+    }
+
+    function removeFromCart(productId) {
+        cart = cart.filter(i => i.id !== productId);
+        saveCart();
+        updateCart();
+    }
+
+    function saveCart() {
+        localStorage.setItem('cart', JSON.stringify(cart));
     }
 
     function updateCart() {
@@ -241,9 +273,14 @@
                     <div class="product-img"><img src="${item.img}" alt="${item.name}" loading="lazy"></div>
                     <div class="cart-item-info">
                         <div>${item.name}</div>
-                        <div style="color: #888; font-size: 12px;">${item.qty} шт.</div>
+                        <div class="cart-item-controls">
+                            <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                            <span class="qty-value">${item.qty}</span>
+                            <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                        </div>
                     </div>
-                    <div>${(item.price * item.qty).toLocaleString()} ₽</div>
+                    <div class="cart-item-price">${(item.price * item.qty).toLocaleString()} ₽</div>
+                    <button class="remove-btn" onclick="removeFromCart(${item.id})">&times;</button>
                 </div>
             `;
         });
@@ -254,11 +291,9 @@
 
     function toggleCart() {
         const panel = document.getElementById('cartPanel');
+        panel.classList.toggle('open');
         if (panel.classList.contains('open')) {
-            panel.classList.remove('open');
-        } else {
-            panel.classList.add('open');
-            updateCart(); // Обновляем при открытии
+            updateCart();
         }
     }
 
