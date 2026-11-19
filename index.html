@@ -21,12 +21,13 @@
     .nav-links { display: none; gap: 24px; font-size: 14px; font-weight: 500; }
     .nav-links a { cursor: pointer; transition: color 0.2s; }
     .nav-links a:hover { color: #e60000; }
-    .cart-btn { border: 1px solid #000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; }
+    .cart-btn { border: 1px solid #000; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 500; user-select: none; }
 
     .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; padding: 32px 0; }
     .category-card { position: relative; height: 200px; border-radius: 8px; overflow: hidden; cursor: pointer; background: #f4f4f4; display: flex; align-items: center; justify-content: center; }
-    .category-card:hover .category-title { color: #e60000; }
-    .category-title { color: #000; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+    .category-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; transition: transform 0.3s; }
+    .category-card:hover img { transform: scale(1.05); }
+    .category-title { position: relative; z-index: 2; color: #fff; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 2px 6px rgba(0,0,0,0.7); transition: color 0.3s; }
     
     .products-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; padding-bottom: 40px; }
     .product-card { background: #f9f9f9; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s; }
@@ -37,11 +38,11 @@
         background: #e9e9e9; overflow: hidden;
         border-bottom: 1px solid #eee;
         display: flex; align-items: center; justify-content: center;
-        color: #ccc; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;
     }
     .product-img img {
         width: 100%; height: 100%; object-fit: cover; display: block;
         filter: saturate(0.95) contrast(1.02);
+        loading: lazy;
     }
     
     .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
@@ -67,7 +68,7 @@
     .cart-item-info { flex-grow: 1; font-size: 14px; }
     .cart-total { border-top: 1px solid #eee; padding-top: 16px; margin-top: 16px; font-size: 20px; font-weight: 700; text-align: right; }
     .checkout-btn { background: #e60000; color: #fff; border: none; padding: 16px; border-radius: 4px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 16px; width: 100%; }
-    .close-cart { cursor: pointer; font-size: 24px; }
+    .close-cart { cursor: pointer; font-size: 24px; user-select: none; }
 
     @media (min-width: 768px) {
         .nav-links { display: flex; }
@@ -97,15 +98,19 @@
 <main class="container">
     <div class="categories-grid">
         <div class="category-card" onclick="filterAudience('women')">
+            <img src="https://images.pexels.com/photos/7202800/pexels-photo-7202800.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Женщинам" loading="lazy">
             <div class="category-title">Женщинам</div>
         </div>
         <div class="category-card" onclick="filterAudience('men')">
+            <img src="https://images.pexels.com/photos/31849224/pexels-photo-31849224.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Мужчинам" loading="lazy">
             <div class="category-title">Мужчинам</div>
         </div>
         <div class="category-card" onclick="filterAudience('kids')">
+            <img src="https://images.pexels.com/photos/6261908/pexels-photo-6261908.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Детям" loading="lazy">
             <div class="category-title">Детям</div>
         </div>
         <div class="category-card" onclick="filterAudience('all')">
+            <img src="https://images.pexels.com/photos/1884581/pexels-photo-1884581.jpeg?auto=compress&cs=tinysrgb&w=600" alt="Все товары" loading="lazy">
             <div class="category-title">Все товары</div>
         </div>
     </div>
@@ -126,22 +131,43 @@
 <script>
     const allProducts = [
         {id: 1, name: 'Платье миди', category: 'Платья', audience: 'women', price: 4500, brand: 'ZARA', 
-         img: 'https://images.weserv.nl/?url=img.tkmaxx.com/medias/30805240-large-wl-01.jpg'},
-         
+         img: 'https://images.pexels.com/photos/18953353/pexels-photo-18953353.jpeg?auto=compress&cs=tinysrgb&w=600'},
         {id: 2, name: 'Джинсы широкие', category: 'Джинсы', audience: 'women', price: 3800, brand: 'Levis', 
-         img: 'TESTMAGAZIN'}, // Ждем ссылку
-         
-        {id: 3, name: 'Кроссовки белые', category: 'Обувь', audience: 'men', price: 7990, brand: 'Nike', 
-         img: 'TESTMAGAZIN'}, // Ждем ссылку
-         
-        {id: 4, name: 'Сумка кожаная', category: 'Аксессуары', audience: 'women', price: 6200, brand: 'Mango', 
-         img: 'TESTMAGAZIN'}, // Ждем ссылку
-         
-        {id: 5, name: 'Худи оверсайз', category: 'Верхняя одежда', audience: 'kids', price: 3500, brand: 'H&M', 
-         img: 'TESTMAGAZIN'}, // Ждем ссылку
-         
-        {id: 6, name: 'Пальто шерстяное', category: 'Верхняя одежда', audience: 'women', price: 12500, brand: 'COS', 
-         img: 'TESTMAGAZIN'} // Ждем ссылку
+         img: 'https://images.pexels.com/photos/29627103/pexels-photo-29627103.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 3, name: 'Сумка кожаная', category: 'Аксессуары', audience: 'women', price: 6200, brand: 'Mango', 
+         img: 'https://images.pexels.com/photos/8502477/pexels-photo-8502477.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 4, name: 'Худи оверсайз', category: 'Верхняя одежда', audience: 'women', price: 3500, brand: 'H&M', 
+         img: 'https://images.pexels.com/photos/16982942/pexels-photo-16982942.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 5, name: 'Кожаная куртка', category: 'Верхняя одежда', audience: 'women', price: 15500, brand: 'ZARA', 
+         img: 'https://media.istockphoto.com/id/2161628082/photo/fashionable-beautiful-young-model-woman-in-vogue-sunglasses-in-stylish-black-leather-jacket.jpg?s=1024x1024&w=is&k=20&c=mWNvJa5Og8xEIWGcqHjDXNjM68h23rLu-U3myL9k1Z0='},
+        {id: 6, name: 'Жилет вязаный', category: 'Верхняя одежда', audience: 'women', price: 3200, brand: 'Mango', 
+         img: 'https://images.pexels.com/photos/9178845/pexels-photo-9178845.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 7, name: 'Юбка плиссе', category: 'Юбки', audience: 'women', price: 3900, brand: 'H&M', 
+         img: 'https://images.pexels.com/photos/19451307/pexels-photo-19451307.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        
+        {id: 8, name: 'Кроссовки мужские', category: 'Обувь', audience: 'men', price: 7990, brand: 'Nike', 
+         img: 'https://images.pexels.com/photos/1477538/pexels-photo-1477538.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 9, name: 'Рубашка', category: 'Рубашки', audience: 'men', price: 4500, brand: 'ZARA', 
+         img: 'https://images.pexels.com/photos/35415004/pexels-photo-35415004.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 10, name: 'Брюки', category: 'Брюки', audience: 'men', price: 5200, brand: 'Levis', 
+         img: 'https://images.pexels.com/photos/9464625/pexels-photo-9464625.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 11, name: 'Куртка-бомбер', category: 'Верхняя одежда', audience: 'men', price: 8900, brand: 'Nike', 
+         img: 'https://images.pexels.com/photos/2566899/pexels-photo-2566899.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 12, name: 'Рюкзак', category: 'Аксессуары', audience: 'men', price: 4100, brand: 'Nike', 
+         img: 'https://images.pexels.com/photos/14039946/pexels-photo-14039946.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        
+        {id: 13, name: 'Свитшот детский', category: 'Верхняя одежда', audience: 'kids', price: 2500, brand: 'H&M', 
+         img: 'https://images.pexels.com/photos/5560015/pexels-photo-5560015.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 14, name: 'Комбинезон детский', category: 'Верхняя одежда', audience: 'kids', price: 3800, brand: 'ZARA', 
+         img: 'https://images.pexels.com/photos/30435359/pexels-photo-30435359.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 15, name: 'Детская куртка', category: 'Верхняя одежда', audience: 'kids', price: 4500, brand: 'H&M', 
+         img: 'https://images.pexels.com/photos/5788237/pexels-photo-5788237.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 16, name: 'Платье детское', category: 'Платья', audience: 'kids', price: 3200, brand: 'ZARA', 
+         img: 'https://images.pexels.com/photos/28246503/pexels-photo-28246503.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 17, name: 'Кеды детские', category: 'Обувь', audience: 'kids', price: 2900, brand: 'Nike', 
+         img: 'https://images.pexels.com/photos/29753638/pexels-photo-29753638.jpeg?auto=compress&cs=tinysrgb&w=600'},
+        {id: 18, name: 'Детский рюкзак', category: 'Аксессуары', audience: 'kids', price: 2100, brand: 'Nike', 
+         img: 'https://images.pexels.com/photos/7269547/pexels-photo-7269547.jpeg?auto=compress&cs=tinysrgb&w=600'}
     ];
 
     let currentCategory = 'all';
@@ -162,9 +188,7 @@
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <div class="product-img">
-                    ${product.img.startsWith('http') ? `<img src="${product.img}" alt="${product.name}">` : product.img}
-                </div>
+                <div class="product-img"><img src="${product.img}" alt="${product.name}" loading="lazy"></div>
                 <div class="product-info">
                     <div class="product-brand">${product.brand}</div>
                     <div class="product-name">${product.name}</div>
@@ -199,7 +223,7 @@
         }
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCart();
-        toggleCart();
+        // Не открываем корзину автоматически, чтобы не мешать, но обновляем счетчик
     }
 
     function updateCart() {
@@ -214,9 +238,7 @@
             totalPrice += item.price * item.qty;
             cartItems.innerHTML += `
                 <div class="cart-item">
-                    <div class="product-img">
-                        ${item.img.startsWith('http') ? `<img src="${item.img}" alt="${item.name}">` : item.img}
-                    </div>
+                    <div class="product-img"><img src="${item.img}" alt="${item.name}" loading="lazy"></div>
                     <div class="cart-item-info">
                         <div>${item.name}</div>
                         <div style="color: #888; font-size: 12px;">${item.qty} шт.</div>
@@ -231,7 +253,13 @@
     }
 
     function toggleCart() {
-        document.getElementById('cartPanel').classList.toggle('open');
+        const panel = document.getElementById('cartPanel');
+        if (panel.classList.contains('open')) {
+            panel.classList.remove('open');
+        } else {
+            panel.classList.add('open');
+            updateCart(); // Обновляем при открытии
+        }
     }
 
     renderProducts();
